@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_list_page">ListPage</string>
+    <string name="title_activity_map_page">MapPage</string>
+    <string name="title_activity_bottom_nav_item">BottomNavItem</string>
+    <string name="title_activity_bottom_nav_bar">BottomNavBar</string>
+    <string name="title_activity_favorite_cities_view_model">FavoriteCitiesViewModel</string>
+    <string name="title_activity_fav_city_dialog">FavCityDialog</string>
+</resources>
