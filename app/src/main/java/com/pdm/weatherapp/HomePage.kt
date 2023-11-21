@@ -1,6 +1,7 @@
 package com.pdm.weatherapp
 
 import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +23,8 @@ import androidx.compose.ui.unit.sp
 
 @Preview(showBackground = true)
 @Composable
-fun HomePage(modifier: Modifier = Modifier){
+fun HomePage(modifier: Modifier = Modifier, viewModel: FavoriteCitiesViewModel,
+             context: Context){
     val activity = LocalContext.current as? Activity
     Column(
         modifier = Modifier

@@ -1,5 +1,6 @@
 package com.pdm.weatherapp
 
+import android.content.Context
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -13,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
@@ -45,16 +47,17 @@ fun BottomNavBar(navController: NavHostController) {
 }
 
 @Composable
-fun MainNavHost(navController: NavHostController, viewModel: FavoriteCitiesViewModel) {
+fun MainNavHost(navController: NavHostController, viewModel: FavoriteCitiesViewModel, context: Context) {
+    val cameraPositionState = rememberCameraPositionState()
     NavHost(navController = navController, startDestination = BottomNavItem.HomePage.route) {
         composable(route = BottomNavItem.HomePage.route) {
-            HomePage()
+            HomePage(viewModel = viewModel, context = context)
         }
         composable(route = BottomNavItem.ListPage.route) {
-            ListPage(viewModel = viewModel)
+            ListPage(viewModel = viewModel, context = context)
         }
         composable(route = BottomNavItem.MapPage.route) {
-            MapPage()
+            MapPage(viewModel = viewModel, context = context, camPosState = cameraPositionState)
         }
     }
 }

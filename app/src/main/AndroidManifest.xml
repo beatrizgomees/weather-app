@@ -69,4 +69,5 @@
             android:value="${MAPS_API_KEY}" />
     </application>
 
+
 </manifest>

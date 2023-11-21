@@ -2,6 +2,7 @@ package com.pdm.weatherapp
 
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ListPage(
     modifier: Modifier = Modifier,
-    viewModel: FavoriteCitiesViewModel
+    viewModel: FavoriteCitiesViewModel,
+    context: Context
 ) {
     val cityList: List<FavoriteCity> = viewModel.cities
     val toastMessageListPage = LocalContext.current as? Activity
