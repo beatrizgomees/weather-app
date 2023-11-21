@@ -32,6 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.pdm.weatherapp.ui.theme.WeatherAppTheme
 
 class RegisterActivity : ComponentActivity() {
@@ -59,7 +61,7 @@ fun RegisterPage(modifier: Modifier = Modifier){
     var email by rememberSaveable { mutableStateOf("") }
     var senha by rememberSaveable { mutableStateOf("") }
     var confirmarSenha by rememberSaveable { mutableStateOf("") }
-    val confirmarRegistro = LocalContext.current as? Activity
+    val activity = LocalContext.current as? Activity
 
     Column (
         modifier = Modifier.padding(10.dp),
@@ -106,12 +108,16 @@ fun RegisterPage(modifier: Modifier = Modifier){
         Row(modifier = modifier){
             Button(
                 onClick = {
-                    Toast.makeText(confirmarRegistro, "Registro OK!", Toast.LENGTH_LONG).show()
-                    confirmarRegistro?.startActivity(
-                        Intent(
-                            confirmarRegistro, LoginActivity::class.java
-                        ).setFlags(FLAG_ACTIVITY_SINGLE_TOP)
-                    )
+
+                    Firebase.auth.createUserWithEmailAndPassword(email, senha)
+                        .addOnCompleteListener(activity!!) { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(activity, "Registro OK!", Toast.LENGTH_LONG).show()
+                                activity?.finish()
+                            } else {
+                                Toast.makeText(activity,"Registro FALHOU!", Toast.LENGTH_LONG).show()
+                            }
+                        }
                 },
                 enabled = nomeUsuario.isNotEmpty() && email.isNotEmpty() && senha.isNotEmpty() && confirmarSenha.isNotEmpty()
 

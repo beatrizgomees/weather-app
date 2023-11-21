@@ -24,6 +24,8 @@ import androidx.compose.ui.platform.LocalContext
 import android.Manifest
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.pdm.weatherapp.ui.theme.WeatherAppTheme
 
 class HomeActivity : ComponentActivity() {
@@ -55,7 +57,8 @@ class HomeActivity : ComponentActivity() {
                         TopAppBar(
                             title = { Text("Bem-vindo/a!") },
                             actions = {
-                                IconButton( onClick = { finish() } ) {
+                                IconButton( onClick = { Firebase.auth.signOut()
+                                    finish() } ) {
                                     Icon(
                                         imageVector = Icons.Filled.ExitToApp,
                                         contentDescription = "Localized description"
