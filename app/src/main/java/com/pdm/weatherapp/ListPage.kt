@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pdm.weatherapp.db.FirebaseDB
 import com.pdm.weatherapp.model.FavoriteCity
 
 
@@ -45,7 +46,7 @@ fun ListPage(
     ) {
        items(cityList){ city ->
            FavoriteCityItem(favoriteCity = city, onClose = {
-            viewModel.remove(city)
+            FirebaseDB.add(city)
            }) {
                Toast.makeText(toastMessageListPage, "This is a Toast", Toast.LENGTH_LONG).show()
                toastMessageListPage?.startActivity(

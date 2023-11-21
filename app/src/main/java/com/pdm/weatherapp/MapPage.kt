@@ -19,6 +19,8 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.pdm.weatherapp.db.FirebaseDB
+import com.pdm.weatherapp.model.FavoriteCity
 
 @Composable
 fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel,
@@ -38,7 +40,7 @@ fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel,
         cameraPositionState = camPosState,
         properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
         uiSettings = MapUiSettings(myLocationButtonEnabled = true),
-        onMapClick = { viewModel.add("Nova cidade", location = it) }) {
+        onMapClick = { FirebaseDB.add(FavoriteCity("Nova cidade", location = it)) }) {
         viewModel.cities.forEach {
             if (it.location != null) {
                 Marker( state = MarkerState(position = it.location!!),

@@ -27,6 +27,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.pdm.weatherapp.db.FirebaseDB
+import com.pdm.weatherapp.model.FavoriteCity
 import com.pdm.weatherapp.ui.theme.WeatherAppTheme
 
 class HomeActivity() : ComponentActivity() {
@@ -51,7 +53,7 @@ class HomeActivity() : ComponentActivity() {
                     onDismiss = { showDialog.value = false },
                     onConfirm = { city ->
                         if (city.isNotBlank()){
-                            viewModel.add(city)
+                            FirebaseDB.add(FavoriteCity())
                         }
                         showDialog.value = false
                     })
