@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 
 @Preview(showBackground = true)
 @Composable
-fun HomePage(modifier: Modifier = Modifier, viewModel: FavoriteCitiesViewModel,
+fun HomePage(modifier: Modifier = Modifier, viewModel: MainViewModel,
              context: Context){
     val activity = LocalContext.current as? Activity
     Column(

@@ -20,21 +20,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pdm.weatherapp.model.FavoriteCity
 
 
 @Composable
 fun ListPage(
     modifier: Modifier = Modifier,
-    viewModel: FavoriteCitiesViewModel,
+    viewModel: MainViewModel,
     context: Context
 ) {
     val cityList: List<FavoriteCity> = viewModel.cities
@@ -83,8 +81,8 @@ fun FavoriteCityItem(
         )
         Spacer(modifier = Modifier.size(12.dp))
         Column (modifier = modifier.weight(1f)){
-            Text(modifier = Modifier, text = favoriteCity.cityName, fontSize = 24.sp)
-            Text(modifier = Modifier, text = favoriteCity.currentWeather, fontSize = 16.sp)
+            Text(modifier = Modifier, text = favoriteCity.name.toString(), fontSize = 24.sp)
+            Text(modifier = Modifier, text = favoriteCity.weather.toString(), fontSize = 16.sp)
         }
         IconButton(onClick = onClose) {
             Icon(Icons.Filled.Close, contentDescription = "null")

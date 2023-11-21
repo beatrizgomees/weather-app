@@ -21,8 +21,8 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 
 @Composable
-fun MapPage( modifier: Modifier = Modifier, viewModel: FavoriteCitiesViewModel,
-             context: Context, camPosState: CameraPositionState
+fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel,
+            context: Context, camPosState: CameraPositionState
 ) {
     val recife = LatLng(-8.05, -34.9)
     val caruaru = LatLng(-8.27, -35.98)
@@ -42,7 +42,7 @@ fun MapPage( modifier: Modifier = Modifier, viewModel: FavoriteCitiesViewModel,
         viewModel.cities.forEach {
             if (it.location != null) {
                 Marker( state = MarkerState(position = it.location!!),
-                    title = "${it.cityName}", snippet = "${it.location}")
+                    title = "${it.name}", snippet = "${it.location}")
             }
         }
         Marker(

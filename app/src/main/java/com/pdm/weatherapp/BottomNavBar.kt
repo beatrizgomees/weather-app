@@ -47,7 +47,7 @@ fun BottomNavBar(navController: NavHostController) {
 }
 
 @Composable
-fun MainNavHost(navController: NavHostController, viewModel: FavoriteCitiesViewModel, context: Context) {
+fun MainNavHost(navController: NavHostController, viewModel: MainViewModel, context: Context) {
     val cameraPositionState = rememberCameraPositionState()
     NavHost(navController = navController, startDestination = BottomNavItem.HomePage.route) {
         composable(route = BottomNavItem.HomePage.route) {

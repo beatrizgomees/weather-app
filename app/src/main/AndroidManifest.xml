@@ -19,7 +19,7 @@
             android:label="@string/title_activity_fav_city_dialog"
             android:theme="@style/Theme.WeatherApp" />
         <activity
-            android:name=".FavoriteCitiesViewModel"
+            android:name=".MainViewModel"
             android:exported="false"
             android:label="@string/title_activity_favorite_cities_view_model"
             android:theme="@style/Theme.WeatherApp" />
