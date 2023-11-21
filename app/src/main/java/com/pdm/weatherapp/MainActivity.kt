@@ -28,12 +28,14 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.pdm.weatherapp.ui.theme.WeatherAppTheme
 
-class HomeActivity : ComponentActivity() {
-
+class HomeActivity() : ComponentActivity() {
+    private lateinit var fbAuthList: FBAuthListener
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.fbAuthList = FBAuthListener(this)
         val viewModelFavorite = FavoriteCitiesViewModel();
+
         setContent {
             val showDialog = remember { mutableStateOf(false) }
             val navController = rememberNavController()
@@ -57,8 +59,7 @@ class HomeActivity : ComponentActivity() {
                         TopAppBar(
                             title = { Text("Bem-vindo/a!") },
                             actions = {
-                                IconButton( onClick = { Firebase.auth.signOut()
-                                    finish() } ) {
+                                IconButton( onClick = { } ) {
                                     Icon(
                                         imageVector = Icons.Filled.ExitToApp,
                                         contentDescription = "Localized description"
@@ -90,6 +91,14 @@ class HomeActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        Firebase.auth.addAuthStateListener(fbAuthList)
+    }
+    override fun onStop() {
+        super.onStop()
+        Firebase.auth.removeAuthStateListener(fbAuthList)
     }
 }
 

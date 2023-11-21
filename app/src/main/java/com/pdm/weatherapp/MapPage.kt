@@ -43,7 +43,7 @@ fun MapPage( modifier: Modifier = Modifier, viewModel: FavoriteCitiesViewModel,
             if (it.location != null) {
                 Marker( state = MarkerState(position = it.location!!),
                     title = "${it.cityName}", snippet = "${it.location}")
-            }
+            }g
         }
         Marker(
             state = MarkerState(position = recife),

@@ -1,8 +1,6 @@
 package com.pdm.weatherapp
 
 import android.app.Activity
-import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -36,9 +34,12 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.pdm.weatherapp.ui.theme.WeatherAppTheme
 
-class RegisterActivity : ComponentActivity() {
+class RegisterActivity() : ComponentActivity() {
+    private lateinit var fbAuthList: FBAuthListener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.fbAuthList = FBAuthListener(this)
         setContent {
             WeatherAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -51,17 +52,29 @@ class RegisterActivity : ComponentActivity() {
             }
         }
     }
+    override fun onStart() {
+        super.onStart()
+        Firebase.auth.addAuthStateListener(fbAuthList)
+    }
+    override fun onStop() {
+        super.onStop()
+        Firebase.auth.removeAuthStateListener(fbAuthList)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun RegisterPage(modifier: Modifier = Modifier){
+fun RegisterPage(modifier: Modifier = Modifier) {
+
+
     var nomeUsuario by rememberSaveable {mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var senha by rememberSaveable { mutableStateOf("") }
     var confirmarSenha by rememberSaveable { mutableStateOf("") }
     val activity = LocalContext.current as? Activity
+
+
 
     Column (
         modifier = Modifier.padding(10.dp),
@@ -113,7 +126,7 @@ fun RegisterPage(modifier: Modifier = Modifier){
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
                                 Toast.makeText(activity, "Registro OK!", Toast.LENGTH_LONG).show()
-                                activity?.finish()
+
                             } else {
                                 Toast.makeText(activity,"Registro FALHOU!", Toast.LENGTH_LONG).show()
                             }

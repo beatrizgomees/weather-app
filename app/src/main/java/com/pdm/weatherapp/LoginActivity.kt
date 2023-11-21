@@ -37,9 +37,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.pdm.weatherapp.ui.theme.WeatherAppTheme
 
-class LoginActivity : ComponentActivity() {
+class LoginActivity() : ComponentActivity() {
+    private lateinit var fbAuthList: FBAuthListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.fbAuthList = FBAuthListener(this)
         setContent {
             WeatherAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -51,6 +53,14 @@ class LoginActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        Firebase.auth.addAuthStateListener(fbAuthList)
+    }
+    override fun onStop() {
+        super.onStop()
+        Firebase.auth.removeAuthStateListener(fbAuthList)
     }
 }
 
@@ -93,11 +103,6 @@ fun LoginPage(modifier: Modifier = Modifier){
                     Firebase.auth.signInWithEmailAndPassword(email, senha)
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
-                                activity?.startActivity(
-                                    Intent(activity, HomeActivity::class.java).setFlags(
-                                        FLAG_ACTIVITY_SINGLE_TOP
-                                    )
-                                )
                                 Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show()
                             } else {
                                 Toast.makeText(activity, "Login FALHOU!", Toast.LENGTH_LONG).show()
@@ -129,5 +134,7 @@ fun LoginPage(modifier: Modifier = Modifier){
         }) {
            Text("Registro")
         }
+
     }
+
 }
