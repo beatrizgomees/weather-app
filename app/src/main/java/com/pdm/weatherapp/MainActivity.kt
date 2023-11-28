@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import android.Manifest
+import androidx.activity.viewModels
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.ktx.auth
@@ -34,7 +35,7 @@ class HomeActivity() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.fbAuthList = FBAuthListener(this)
-        val viewModelFavorite = FavoriteCitiesViewModel();
+        val viewModel : MainViewModel by viewModels();
 
         setContent {
             val showDialog = remember { mutableStateOf(false) }
@@ -50,14 +51,14 @@ class HomeActivity() : ComponentActivity() {
                     onDismiss = { showDialog.value = false },
                     onConfirm = { city ->
                         if (city.isNotBlank()){
-                            viewModelFavorite.add(city)
+                            viewModel.add(city)
                         }
                         showDialog.value = false
                     })
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("Bem-vindo/a!") },
+                             title = { Text("Bem-vindo/a ${viewModel.user.name}") },
                             actions = {
                                 IconButton( onClick = { } ) {
                                     Icon(
@@ -85,7 +86,7 @@ class HomeActivity() : ComponentActivity() {
                         launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
 
 
-                    MainNavHost(navController = navController, viewModel = viewModelFavorite, context = context)
+                    MainNavHost(navController = navController, viewModel = viewModel, context = context)
                 }
 
                 }

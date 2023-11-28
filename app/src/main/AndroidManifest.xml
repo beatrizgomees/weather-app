@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,12 +16,22 @@
         android:theme="@style/Theme.WeatherApp"
         tools:targetApi="31">
         <activity
+            android:name=".model.ui.theme.User"
+            android:exported="false"
+            android:label="@string/title_activity_user"
+            android:theme="@style/Theme.WeatherApp" />
+        <activity
+            android:name=".model.FavoriteCityModel"
+            android:exported="false"
+            android:label="@string/title_activity_favorite_city_model"
+            android:theme="@style/Theme.WeatherApp" />
+        <activity
             android:name=".FavCityDialog"
             android:exported="false"
             android:label="@string/title_activity_fav_city_dialog"
             android:theme="@style/Theme.WeatherApp" />
         <activity
-            android:name=".FavoriteCitiesViewModel"
+            android:name=".MainViewModel"
             android:exported="false"
             android:label="@string/title_activity_favorite_cities_view_model"
             android:theme="@style/Theme.WeatherApp" />
@@ -64,10 +76,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
     </application>
-
 
 </manifest>
