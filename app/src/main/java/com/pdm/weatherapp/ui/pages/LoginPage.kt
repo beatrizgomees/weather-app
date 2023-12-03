@@ -1,25 +1,19 @@
-package com.pdm.weatherapp
+package com.pdm.weatherapp.ui.pages
 
 import android.app.Activity
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
-import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,36 +27,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.pdm.weatherapp.ui.theme.WeatherAppTheme
-
-class LoginActivity() : ComponentActivity() {
-    private lateinit var fbAuthList: FBAuthListener
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        this.fbAuthList = FBAuthListener(this)
-        setContent {
-            WeatherAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    LoginPage()
-                }
-            }
-        }
-    }
-    override fun onStart() {
-        super.onStart()
-        Firebase.auth.addAuthStateListener(fbAuthList)
-    }
-    override fun onStop() {
-        super.onStop()
-        Firebase.auth.removeAuthStateListener(fbAuthList)
-    }
-}
+import com.google.firebase.auth.auth
+import com.pdm.weatherapp.ui.activities.MainActivity
+import com.pdm.weatherapp.ui.activities.RegisterActivity
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,14 +45,15 @@ fun LoginPage(modifier: Modifier = Modifier){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) { Text(text = "Bem-Vindo/a!", fontSize = 24.sp)
+    ) {
+        Text(text = "Bem-Vindo/a!", fontSize = 24.sp)
         Spacer(modifier = Modifier.size(24.dp))
         OutlinedTextField(
 
             value = email,
-            label = { Text(text = "Digite seu e-mail")},
+            label = { Text(text = "Digite seu e-mail") },
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = {email = it}
+            onValueChange = { email = it }
         )
         Spacer(modifier = Modifier.size(24.dp))
         OutlinedTextField(
@@ -97,12 +65,19 @@ fun LoginPage(modifier: Modifier = Modifier){
         )
         Spacer(modifier = Modifier.size(24.dp))
 
-        Row(modifier = modifier) {
+        Row(
+            modifier = modifier
+        ) {
             Button(
                 onClick = {
-                    Firebase.auth.signInWithEmailAndPassword(email, senha)
+                    com.google.firebase.Firebase.auth.signInWithEmailAndPassword(email, senha)
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
+                                activity.startActivity(
+                                    Intent(activity, MainActivity::class.java).setFlags(
+                                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                    )
+                                )
                                 Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show()
                             } else {
                                 Toast.makeText(activity, "Login FALHOU!", Toast.LENGTH_LONG).show()
@@ -110,12 +85,10 @@ fun LoginPage(modifier: Modifier = Modifier){
                         }
                 },
                 enabled = email.isNotEmpty() && senha.isNotEmpty()
-            )
-
-            {
+            ) {
                 Text("Login")
             }
-            Spacer(modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
             Button(
                 onClick = { email = ""; senha = "" }
@@ -123,18 +96,19 @@ fun LoginPage(modifier: Modifier = Modifier){
                 Text("Limpar")
             }
 
-        }
-        Spacer(modifier = Modifier.size(24.dp))
-        Button(onClick = {
-            activity?.startActivity(
-                Intent(activity, RegisterActivity::class.java).setFlags(
-                    FLAG_ACTIVITY_SINGLE_TOP
-                )
-            )
-        }) {
-           Text("Registro")
-        }
+            Spacer(modifier = Modifier.width(16.dp))
 
+            Button(
+                onClick = {
+                    activity?.startActivity(
+                        Intent(activity, RegisterActivity::class.java).setFlags(
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        )
+                    )
+                }
+            ) {
+                Text("Cadastrar")
+            }
+        }
     }
-
 }

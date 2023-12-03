@@ -1,5 +1,6 @@
-package com.pdm.weatherapp
+package com.pdm.weatherapp.ui.activities
 
+import FavCityDialog
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -21,22 +22,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import android.Manifest
-import androidx.activity.viewModels
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import android.Manifest
+import androidx.activity.viewModels
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.pdm.weatherapp.ui.components.BottomNavBar
+import com.pdm.weatherapp.ui.components.MainNavHost
 import com.pdm.weatherapp.ui.theme.WeatherAppTheme
+import pdm.weatherapp.db.FirebaseDB
+import pdm.weatherapp.model.FavoriteCity
+import com.pdm.weatherapp.ui.components.BottomNavItem
+import com.pdm.weatherapp.utils.FBAuthListener
+import com.pdm.weatherapp.viewmodels.MainViewModel
 
-class HomeActivity() : ComponentActivity() {
-    private lateinit var fbAuthList: FBAuthListener
+class MainActivity : ComponentActivity() {
+    val viewModel : MainViewModel by viewModels()
+    private lateinit var fbAuthListener: FBAuthListener
+
+    override fun onStart() {
+        super.onStart()
+        Firebase.auth.addAuthStateListener(fbAuthListener)
+    }
+    override fun onStop() {
+        super.onStop()
+        Firebase.auth.removeAuthStateListener(fbAuthListener)
+    }
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.fbAuthList = FBAuthListener(this)
-        val viewModel : MainViewModel by viewModels();
-
+        this.fbAuthListener = FBAuthListener(this)
         setContent {
             val showDialog = remember { mutableStateOf(false) }
             val navController = rememberNavController()
@@ -46,21 +62,23 @@ class HomeActivity() : ComponentActivity() {
                     BottomNavItem.MapPage.route
             val launcher = rememberLauncherForActivityResult(contract =
             ActivityResultContracts.RequestPermission(), onResult = {} )
+
             WeatherAppTheme {
                 if (showDialog.value) FavCityDialog(
                     onDismiss = { showDialog.value = false },
                     onConfirm = { city ->
-                        if (city.isNotBlank()){
-                            viewModel.add(city)
-                        }
+                        if (city.isNotBlank()) FirebaseDB.add(FavoriteCity(city))
                         showDialog.value = false
                     })
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                             title = { Text("Bem-vindo/a ${viewModel.user.name}") },
+                            title = { Text("Bem-vindo/a ${viewModel.user.name}") },
                             actions = {
-                                IconButton( onClick = { } ) {
+                                IconButton( onClick = {
+                                    Firebase.auth.signOut()
+                                    finish()
+                                } ) {
                                     Icon(
                                         imageVector = Icons.Filled.ExitToApp,
                                         contentDescription = "Localized description"
@@ -79,27 +97,19 @@ class HomeActivity() : ComponentActivity() {
                             }
                         }
                     }
-                )
-
-                {innerPadding ->
+                ) {
+                        innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-
-
-                    MainNavHost(navController = navController, viewModel = viewModel, context = context)
-                }
-
+                        MainNavHost(
+                            navController = navController,
+                            viewModel = viewModel,
+                            context = context
+                        )
+                    }
                 }
             }
         }
-    }
-    override fun onStart() {
-        super.onStart()
-        Firebase.auth.addAuthStateListener(fbAuthList)
-    }
-    override fun onStop() {
-        super.onStop()
-        Firebase.auth.removeAuthStateListener(fbAuthList)
     }
 }
 

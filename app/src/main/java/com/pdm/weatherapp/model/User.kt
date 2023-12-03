@@ -1,3 +1,6 @@
-package com.pdm.weatherapp.model
+package pdm.weatherapp.model
 
-data class User(var name: String? = null, var email: String? = null)
+data class User(
+    var name: String? = null,
+    var email: String? = null
+)

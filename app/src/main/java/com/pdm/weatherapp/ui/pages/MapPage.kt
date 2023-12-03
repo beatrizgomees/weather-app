@@ -1,6 +1,7 @@
-package com.pdm.weatherapp
+package com.pdm.weatherapp.ui.pages
 
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,9 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import pdm.weatherapp.db.FirebaseDB
+import pdm.weatherapp.model.FavoriteCity
+import com.pdm.weatherapp.viewmodels.MainViewModel
 
 @Composable
 fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel,
@@ -26,46 +30,55 @@ fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel,
 ) {
     val recife = LatLng(-8.05, -34.9)
     val caruaru = LatLng(-8.27, -35.98)
-    val joaopessoa = LatLng(-7.12, -34.84)
+    val joaoPessoa = LatLng(-7.12, -34.84)
+
     val hasLocationPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED
         )
     }
-    GoogleMap (modifier = Modifier.fillMaxSize(),
-        cameraPositionState = camPosState,
+    GoogleMap (
+        modifier = modifier.fillMaxSize(),
+        onMapClick = { FirebaseDB.add(
+            FavoriteCity(
+            name = "Cidade - lat: ${it.latitude}, long: ${it.longitude}",
+            latitude = it.latitude,
+            longitude = it.longitude)
+        )},
         properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
         uiSettings = MapUiSettings(myLocationButtonEnabled = true),
-        onMapClick = { viewModel.add("Nova cidade", location = it) }) {
+        cameraPositionState = camPosState,
+    ) {
         viewModel.cities.forEach {
-            if (it.location != null) {
-                Marker( state = MarkerState(position = it.location!!),
-                    title = "${it.cityName}", snippet = "${it.location}")
+            if (it.latitude != null && it.longitude != null) {
+                Marker( state = MarkerState(position = LatLng(it.latitude!!, it.longitude!!)),
+                    title = it.name, snippet = "${LatLng(it.latitude!!, it.longitude!!)}")
             }
         }
+
         Marker(
             state = MarkerState(position = recife),
             title = "Recife",
-            snippet = "Marcador em Recife",
-            icon = BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_BLUE)
+            snippet = "Recife, Pernambuco",
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
         )
+
         Marker(
             state = MarkerState(position = caruaru),
-            title = "caruaru",
-            snippet = "Marcador em Caruaru",
-            icon = BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_BLUE)
+            title = "Caruaru",
+            snippet = "Caruaru, Pernambuco",
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
         )
+
         Marker(
-            state = MarkerState(position = joaopessoa),
+            state = MarkerState(position = joaoPessoa),
             title = "João Pessoa",
-            snippet = "Marcador em João Pessoa",
-            icon = BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_BLUE)
+            snippet = "João Pessoa, Paraíba",
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
         )
+
     }
 }
 

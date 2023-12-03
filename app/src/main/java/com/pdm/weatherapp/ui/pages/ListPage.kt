@@ -1,10 +1,6 @@
-package com.pdm.weatherapp
+package com.pdm.weatherapp.ui.pages
 
-
-import FavoriteCity
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,10 +20,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import pdm.weatherapp.db.FirebaseDB
+import pdm.weatherapp.model.FavoriteCity
+import com.pdm.weatherapp.viewmodels.MainViewModel
 
 @Composable
 fun ListPage(
@@ -36,58 +33,54 @@ fun ListPage(
     context: Context
 ) {
     val cityList: List<FavoriteCity> = viewModel.cities
-    val toastMessageListPage = LocalContext.current as? Activity
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
-       items(cityList){ city ->
-           FavoriteCityItem(favoriteCity = city, onClose = {
-            viewModel.remove(city)
-           }) {
-               Toast.makeText(toastMessageListPage, "This is a Toast", Toast.LENGTH_LONG).show()
-               toastMessageListPage?.startActivity(
-                   Intent(
-                       toastMessageListPage, LoginActivity::class.java
-                   ).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-               )
-           }
-
-       }
+        items(cityList) { c ->
+            FavoriteCityItem(favCity = c, onClose = {
+               FirebaseDB.remove(c)
+            }, onClick = {city ->
+                Toast.makeText(context, "Cidade ${city.name} adicionada", Toast.LENGTH_LONG).show()
+            })
+        }
     }
-}
 
+}
 
 
 @Composable
 fun FavoriteCityItem(
-    favoriteCity: FavoriteCity,
+    favCity: FavoriteCity,
+    onClick: (FavoriteCity) -> Unit,
     onClose: () -> Unit,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit?
+    modifier: Modifier = Modifier
 ) {
-    Row (
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+    Row(
+        modifier = modifier.fillMaxWidth().padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         Icon(
             Icons.Rounded.FavoriteBorder,
-            contentDescription = "",
-
+            contentDescription = ""
         )
         Spacer(modifier = Modifier.size(12.dp))
-        Column (modifier = modifier.weight(1f)){
-            Text(modifier = Modifier, text = favoriteCity.cityName, fontSize = 24.sp)
-            Text(modifier = Modifier, text = favoriteCity.currentWeather, fontSize = 16.sp)
+        Column(modifier = modifier.weight(1f)) {
+            favCity.name?.let {
+                Text(modifier = Modifier,
+                    text = it,
+                    fontSize = 24.sp)
+            }
+            favCity.weather?.let {
+                Text(modifier = Modifier,
+                    text = it,
+                    fontSize = 16.sp)
+            }
         }
         IconButton(onClick = onClose) {
-            Icon(Icons.Filled.Close, contentDescription = "null")
-
+            Icon(Icons.Filled.Close, contentDescription = "Close")
         }
     }
 }
-

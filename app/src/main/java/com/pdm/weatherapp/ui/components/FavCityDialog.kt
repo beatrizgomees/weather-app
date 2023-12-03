@@ -1,6 +1,3 @@
-package com.pdm.weatherapp
-
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavCityDialog(onDismiss: () -> Unit, onConfirm: (city: String) -> Unit) {
@@ -42,9 +38,7 @@ fun FavCityDialog(onDismiss: () -> Unit, onConfirm: (city: String) -> Unit) {
                     Text(text = "Adicionar cidade favorita:")
                     Icon(imageVector = Icons.Filled.Close,
                         contentDescription = "",
-
                         modifier = Modifier.clickable { onDismiss() })
-
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 OutlinedTextField(
@@ -61,4 +55,3 @@ fun FavCityDialog(onDismiss: () -> Unit, onConfirm: (city: String) -> Unit) {
         }
     }
 }
-

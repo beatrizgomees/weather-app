@@ -1,12 +1,12 @@
-package com.pdm.weatherapp.db
+package pdm.weatherapp.db
 
-import FavoriteCity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
-import com.pdm.weatherapp.model.User
+import pdm.weatherapp.model.FavoriteCity
+import pdm.weatherapp.model.User
 
 object FirebaseDB {
     private val db = Firebase.firestore
@@ -44,14 +44,14 @@ object FirebaseDB {
             }
         }
     }
-   fun register(userName: String, email: String) {
+    fun register(userName: String, email: String) {
         val tmpUser = User(userName, email)
         db.collection("users").
         document(auth.currentUser?.uid + "").set(tmpUser);
     }
-   fun add(city : FavoriteCity) {
+    fun add(city : FavoriteCity) {
         auth.currentUser?.let { currUser ->
-            city.cityName?.let { name ->
+            city.name?.let { name ->
                 db.collection("users").document(currUser.uid)
                     .collection("cities").document(name)
                     .set(city)
@@ -62,7 +62,7 @@ object FirebaseDB {
         auth.currentUser?.let { currUser ->
             val citiesRef = db.collection("users")
                 .document(currUser.uid).collection("cities")
-            citiesRef.document(city.cityName!!).delete()
+            citiesRef.document(city.name!!).delete()
         }
     }
 }

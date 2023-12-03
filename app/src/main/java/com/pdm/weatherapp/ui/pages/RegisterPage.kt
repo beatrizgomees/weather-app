@@ -1,23 +1,18 @@
-package com.pdm.weatherapp
+package com.pdm.weatherapp.ui.pages
 
 import android.app.Activity
-import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,38 +25,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.pdm.weatherapp.db.FirebaseDB
-import com.pdm.weatherapp.ui.theme.WeatherAppTheme
+import com.google.firebase.auth.auth
 
-class RegisterActivity() : ComponentActivity() {
-    private lateinit var fbAuthList: FBAuthListener
+import pdm.weatherapp.db.FirebaseDB
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        this.fbAuthList = FBAuthListener(this)
-        setContent {
-            WeatherAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    RegisterPage()
-                }
-            }
-        }
-    }
-    override fun onStart() {
-        super.onStart()
-        Firebase.auth.addAuthStateListener(fbAuthList)
-    }
-    override fun onStop() {
-        super.onStop()
-        Firebase.auth.removeAuthStateListener(fbAuthList)
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -119,38 +86,42 @@ fun RegisterPage(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(24.dp))
 
-        Row(modifier = modifier){
+        Row(
+            modifier = modifier) {
             Button(
                 onClick = {
 
-                    Firebase.auth.createUserWithEmailAndPassword(email, senha)
+                    com.google.firebase.Firebase.auth.createUserWithEmailAndPassword(email, senha)
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
+                                FirebaseDB.register(nomeUsuario, email)
                                 Toast.makeText(activity, "Registro OK!", Toast.LENGTH_LONG).show()
-                                FirebaseDB.register(email, senha);
-
                             } else {
                                 Toast.makeText(activity,"Registro FALHOU!", Toast.LENGTH_LONG).show()
                             }
                         }
                 },
-                enabled = nomeUsuario.isNotEmpty() && email.isNotEmpty() && senha.isNotEmpty() && confirmarSenha.isNotEmpty()
-
+                enabled = nomeUsuario.isNotEmpty() &&
+                        email.isNotEmpty() &&
+                        senha.isNotEmpty() &&
+                        confirmarSenha.isNotEmpty() &&
+                        confirmarSenha == senha
             ) {
                 Text("Registrar")
             }
-            Spacer(modifier = Modifier.size(24.dp))
+
+            Spacer(modifier = Modifier.width(16.dp))
 
             Button(
-                onClick = { nomeUsuario = ""; email = ""; senha = ""; confirmarSenha = "" }
+                onClick = {
+                    nomeUsuario = ""
+                    email = ""
+                    confirmarSenha = ""
+                }
             ) {
                 Text("Limpar")
             }
-
         }
-
-
-
     }
 
 
