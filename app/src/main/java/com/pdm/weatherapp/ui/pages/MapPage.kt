@@ -4,6 +4,7 @@ package com.pdm.weatherapp.ui.pages
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,6 +21,7 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import com.pdm.weatherapp.repository.Repository
 import pdm.weatherapp.db.FirebaseDB
 import pdm.weatherapp.model.FavoriteCity
 import com.pdm.weatherapp.viewmodels.MainViewModel
@@ -28,10 +30,6 @@ import com.pdm.weatherapp.viewmodels.MainViewModel
 fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel,
             context: Context, camPosState: CameraPositionState
 ) {
-    val recife = LatLng(-8.05, -34.9)
-    val caruaru = LatLng(-8.27, -35.98)
-    val joaoPessoa = LatLng(-7.12, -34.84)
-
     val hasLocationPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context,
@@ -41,15 +39,14 @@ fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel,
     }
     GoogleMap (
         modifier = modifier.fillMaxSize(),
-        onMapClick = { FirebaseDB.add(
-            FavoriteCity(
-            name = "Cidade - lat: ${it.latitude}, long: ${it.longitude}",
-            latitude = it.latitude,
-            longitude = it.longitude)
-        )},
-        properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
         uiSettings = MapUiSettings(myLocationButtonEnabled = true),
         cameraPositionState = camPosState,
+        properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
+        onMapClick = {
+            Repository.addCity(lat = it.latitude, long = it.longitude)
+            Toast.makeText(context, "Toque no mapa", Toast.LENGTH_SHORT).show()
+        }
+
     ) {
         viewModel.cities.forEach {
             if (it.latitude != null && it.longitude != null) {
@@ -58,26 +55,7 @@ fun MapPage(modifier: Modifier = Modifier, viewModel: MainViewModel,
             }
         }
 
-        Marker(
-            state = MarkerState(position = recife),
-            title = "Recife",
-            snippet = "Recife, Pernambuco",
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-        )
 
-        Marker(
-            state = MarkerState(position = caruaru),
-            title = "Caruaru",
-            snippet = "Caruaru, Pernambuco",
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-        )
-
-        Marker(
-            state = MarkerState(position = joaoPessoa),
-            title = "João Pessoa",
-            snippet = "João Pessoa, Paraíba",
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-        )
 
     }
 }

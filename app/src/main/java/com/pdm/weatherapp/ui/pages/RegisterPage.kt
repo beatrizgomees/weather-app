@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.auth
+import com.pdm.weatherapp.repository.Repository
 
 import pdm.weatherapp.db.FirebaseDB
 
@@ -94,7 +95,7 @@ fun RegisterPage(modifier: Modifier = Modifier) {
                     com.google.firebase.Firebase.auth.createUserWithEmailAndPassword(email, senha)
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
-                                FirebaseDB.register(nomeUsuario, email)
+                                Repository.register(nomeUsuario, email)
                                 Toast.makeText(activity, "Registro OK!", Toast.LENGTH_LONG).show()
                             } else {
                                 Toast.makeText(activity,"Registro FALHOU!", Toast.LENGTH_LONG).show()

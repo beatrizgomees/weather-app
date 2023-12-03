@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pdm.weatherapp.repository.Repository
 import pdm.weatherapp.db.FirebaseDB
 import pdm.weatherapp.model.FavoriteCity
 import com.pdm.weatherapp.viewmodels.MainViewModel
@@ -41,7 +42,7 @@ fun ListPage(
     ) {
         items(cityList) { c ->
             FavoriteCityItem(favCity = c, onClose = {
-               FirebaseDB.remove(c)
+                Repository.remove(c)
             }, onClick = {city ->
                 Toast.makeText(context, "Cidade ${city.name} adicionada", Toast.LENGTH_LONG).show()
             })
@@ -73,7 +74,7 @@ fun FavoriteCityItem(
                     text = it,
                     fontSize = 24.sp)
             }
-            favCity.weather?.let {
+            favCity.weatherDesc?.let {
                 Text(modifier = Modifier,
                     text = it,
                     fontSize = 16.sp)

@@ -28,6 +28,7 @@ import android.Manifest
 import androidx.activity.viewModels
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.pdm.weatherapp.repository.Repository
 import com.pdm.weatherapp.ui.components.BottomNavBar
 import com.pdm.weatherapp.ui.components.MainNavHost
 import com.pdm.weatherapp.ui.theme.WeatherAppTheme
@@ -66,8 +67,9 @@ class MainActivity : ComponentActivity() {
             WeatherAppTheme {
                 if (showDialog.value) FavCityDialog(
                     onDismiss = { showDialog.value = false },
-                    onConfirm = { city ->
-                        if (city.isNotBlank()) FirebaseDB.add(FavoriteCity(city))
+                    onConfirm = { cityName ->
+                        if (cityName.isNotBlank())
+                            Repository.addCity(name = cityName)
                         showDialog.value = false
                     })
                 Scaffold(
