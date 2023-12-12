@@ -44,6 +44,7 @@ object FirebaseDB {
             }
         }
     }
+
     fun register(userName: String, email: String) {
         val tmpUser = User(userName, email)
         db.collection("users").

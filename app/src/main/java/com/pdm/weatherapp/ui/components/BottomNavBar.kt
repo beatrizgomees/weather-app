@@ -70,7 +70,7 @@ fun MainNavHost(
             HomePage(context = context, viewModel = viewModel)
         }
         composable(route = BottomNavItem.ListPage.route) {
-            ListPage(modifier = Modifier, context = context, viewModel = viewModel)
+            ListPage(modifier = Modifier, context = context, viewModel = viewModel, navCtrl = navController)
         }
         composable(route = BottomNavItem.MapPage.route) {
             MapPage(context = context, viewModel = viewModel, camPosState = cameraPositionState)

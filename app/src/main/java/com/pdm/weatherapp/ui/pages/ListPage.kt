@@ -22,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.pdm.weatherapp.repository.Repository
+import com.pdm.weatherapp.ui.components.BottomNavItem
 import pdm.weatherapp.db.FirebaseDB
 import pdm.weatherapp.model.FavoriteCity
 import com.pdm.weatherapp.viewmodels.MainViewModel
@@ -31,7 +33,8 @@ import com.pdm.weatherapp.viewmodels.MainViewModel
 fun ListPage(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel,
-    context: Context
+    context: Context,
+    navCtrl: NavHostController
 ) {
     val cityList: List<FavoriteCity> = viewModel.cities
 
@@ -43,9 +46,18 @@ fun ListPage(
         items(cityList) { c ->
             FavoriteCityItem(favCity = c, onClose = {
                 Repository.remove(c)
-            }, onClick = {city ->
-                Toast.makeText(context, "Cidade ${city.name} adicionada", Toast.LENGTH_LONG).show()
-            })
+            }, onClick = { favCity ->
+                viewModel.city = favCity
+                navCtrl.navigate(BottomNavItem.HomePage.route) {
+                    navCtrl.graph.startDestinationRoute?.let {
+                        popUpTo(it)
+                    }
+                    launchSingleTop = true
+                }
+            }
+
+                )
+
         }
     }
 
@@ -63,6 +75,8 @@ fun FavoriteCityItem(
         modifier = modifier.fillMaxWidth().padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val desc = favCity.currentWeather?.weather?.get(0)?.description?:
+        "Carregando clima..."
         Icon(
             Icons.Rounded.FavoriteBorder,
             contentDescription = ""
@@ -74,11 +88,11 @@ fun FavoriteCityItem(
                     text = it,
                     fontSize = 24.sp)
             }
-            favCity.weatherDesc?.let {
-                Text(modifier = Modifier,
-                    text = it,
-                    fontSize = 16.sp)
-            }
+
+            Text(modifier = Modifier,
+                text = desc,
+                fontSize = 16.sp)
+
         }
         IconButton(onClick = onClose) {
             Icon(Icons.Filled.Close, contentDescription = "Close")
