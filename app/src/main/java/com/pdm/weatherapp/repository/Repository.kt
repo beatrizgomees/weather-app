@@ -17,10 +17,24 @@ object Repository {
         FirebaseDB.onUserLogout = { onUserLogout?.invoke() }
         FirebaseDB.onCityAdded = { city ->
             onCityAdded?.invoke(city)
-            WeatherForecastService.getCurrentWeather(city.name!!) {
-                    currWeather ->
-                city.currentWeather = currWeather
-                onCityUpdated?.invoke(city)
+            WeatherForecastService.getCurrentWeather(city.name!!) { currWeather ->
+                currWeather?.let { cw ->
+                    city.currentWeather = cw
+                    onCityUpdated?.invoke(city)
+                    cw.weather?.get(0)?.let { w ->
+                        val imgFile = getImageFileName(w.icon)
+                        FirebaseDB.getFileURL(imgFile) { url ->
+                            city.imageUrl = url
+                            onCityUpdated?.invoke(city)
+                            if (url != null) {
+                                WeatherForecastService.getBitmap(url) {
+                                    city.bitmap = it
+                                    onCityUpdated?.invoke(city)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         FirebaseDB.onCityRemoved = { onCityRemoved?.invoke(it) }
@@ -47,6 +61,11 @@ object Repository {
             city.forecast = it
             onCityUpdated?.invoke(city)
         }
+    }
+
+    fun getImageFileName(icon: String?): String {
+        val icon = icon ?: "13d" // default/error = snow
+        return "img/$icon@4x.png"
     }
 
 }

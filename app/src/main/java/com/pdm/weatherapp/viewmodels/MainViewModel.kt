@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.pdm.weatherapp.repository.Repository
+import com.pdm.weatherapp.service.WeatherForecastClasses.Forecast
 import pdm.weatherapp.db.FirebaseDB
 import pdm.weatherapp.model.FavoriteCity
 import pdm.weatherapp.model.User
@@ -13,6 +14,7 @@ import pdm.weatherapp.model.User
 class MainViewModel : ViewModel() {
     private val _cities = mutableStateMapOf<String, FavoriteCity>()
     private var _user = mutableStateOf(User("...", "..."))
+    val forecastImg = mutableStateMapOf<Forecast, String?>()
     val cities: List<FavoriteCity>
         get() = _cities.values.toList()
 

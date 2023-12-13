@@ -1,5 +1,7 @@
 package com.pdm.weatherapp.service
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.Log
 import com.pdm.weatherapp.interfaces.WeatherForecastAPI
 import com.pdm.weatherapp.service.WeatherForecastClasses.CurrentWeather
@@ -10,6 +12,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.squareup.picasso.Picasso
+
 
 object WeatherForecastService {
     private var forecastAPI: WeatherForecastAPI
@@ -53,6 +57,19 @@ object WeatherForecastService {
     fun getForecast(name: String, onResponse : (WeatherForecast?) -> Unit) {
         val call: Call<WeatherForecast?> = forecastAPI.getForecast(name)
         enqueue(call) { onResponse.invoke(it) }
+    }
+
+    fun getBitmap(imageUrl: String, onResponse: ((Bitmap?) -> Unit)? = null) {
+        Picasso.get().load(imageUrl).into(object : com.squareup.picasso.Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                onResponse?.invoke(bitmap)
+            }
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                Log.w("WeatherApp WARNING", "" + e?.message)
+                e?.printStackTrace()
+            }
+        })
     }
 }
 

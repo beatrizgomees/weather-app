@@ -5,6 +5,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
 import pdm.weatherapp.model.FavoriteCity
 import pdm.weatherapp.model.User
 
@@ -64,6 +65,15 @@ object FirebaseDB {
             val citiesRef = db.collection("users")
                 .document(currUser.uid).collection("cities")
             citiesRef.document(city.name!!).delete()
+        }
+    }
+
+    fun getFileURL(imgFile: String, onResponse : (url: String?) -> Unit) {
+        val ref = FirebaseStorage.getInstance().getReference(imgFile)
+        ref.downloadUrl.addOnSuccessListener {
+            onResponse(it.toString())
+        }.addOnFailureListener() {
+            onResponse(null)
         }
     }
 }

@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -20,14 +20,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import com.pdm.weatherapp.R
 import com.pdm.weatherapp.repository.Repository
 import com.pdm.weatherapp.ui.components.BottomNavItem
 import pdm.weatherapp.db.FirebaseDB
 import pdm.weatherapp.model.FavoriteCity
 import com.pdm.weatherapp.viewmodels.MainViewModel
+
 
 @Composable
 fun ListPage(
@@ -75,11 +79,15 @@ fun FavoriteCityItem(
         modifier = modifier.fillMaxWidth().padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val desc = favCity.currentWeather?.weather?.get(0)?.description?:
-        "Carregando clima..."
-        Icon(
-            Icons.Rounded.FavoriteBorder,
-            contentDescription = ""
+        var desc = "Carregando clima ..."
+        favCity.currentWeather?.let {
+            desc = "${it.weather?.get(0)?.description} ${it.main?.temp}℃"
+        }
+        AsyncImage(
+            model = favCity.imageUrl,
+            modifier = Modifier.size(75.dp),
+            error = painterResource(id = R.drawable.loading),
+            contentDescription = "Imagem"
         )
         Spacer(modifier = Modifier.size(12.dp))
         Column(modifier = modifier.weight(1f)) {
